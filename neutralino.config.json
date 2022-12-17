@@ -1,0 +1,48 @@
+{
+    "applicationId": "Dash Core UI",
+    "version": "0.1.0",
+    "defaultMode": "chrome",
+    "port": 0,
+    "documentRoot": "/",
+    "url": "/",
+    "enableServer": true,
+    "enableNativeAPI": true,
+    "tokenSecurity": "none",
+    "logging": {
+        "enabled": false,
+        "writeToLogFile": false
+    },
+    "modes": {
+        "chrome": {
+            "width": 600,
+            "height": 800,
+            "minWidth": 400,
+            "minHeight": 400,
+            "args": "--user-agent=\"Neutralinojs chrome mode\" --disable-web-security"
+        },
+        "window": {
+            "title": "Dash Core UI",
+            "width": 600,
+            "height": 800,
+            "minWidth": 400,
+            "minHeight": 400,
+            "center": true,
+            "fullScreen": false,
+            "alwaysOnTop": false,
+            "icon": "/favicon.ico",
+            "enableInspector": true,
+            "borderless": false,
+            "maximize": false,
+            "hidden": false,
+            "resizable": true,
+            "exitProcessOnClose": false
+        }
+    },
+    "globalVariables": {
+        "DASHD_URL": "http://127.0.0.1:9998/",
+        "RPCUSER": "",
+        "RPCPASSWORD": "",
+        "DASHD_EXE": "C:/Users/serg/Desktop/bin/dashcore-18.1.0/bin/dashd.exe",
+        "DASHD_PARAMS": "-blocksdir=d:\\\\"
+    }
+}

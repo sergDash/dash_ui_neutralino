@@ -1,0 +1,108 @@
+:root {
+    scroll-behavior:smooth
+}
+
+*, 
+*::before, 
+*::after { 
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    font-family: system-ui, sans-serif;
+}
+body {
+    display: grid;
+    grid-template-rows: 1fr max-content max-content;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+body .h0 {
+    height: 0;
+}
+
+.help {
+    transition: height 2s;
+    height: 100%;
+    background: aliceblue;
+    overflow: hidden;
+}
+
+.console {
+    display: grid;
+    align-self: end;
+    height: 10rem;
+    grid-template-rows: auto 3rem;
+}
+.console .log {
+    display: grid;
+    padding: 0.2rem;
+    background-color: #393236;
+    color: #c9bbb7;
+    font-size: 0.9rem;
+    align-content: start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;  /* Firefox */
+}
+.console .log::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+.console .log .line {
+    min-height: 1.3rem;
+    height: max-content;
+}
+.console textarea {
+    height: 100%;
+    resize: none;
+    border: 0;
+    background-color: #1e1d1d;
+    color: wheat;
+    outline: none;
+    padding: 0.2rem;
+}
+
+.hidden {
+    height: 0;
+    overflow: hidden;
+}
+
+
+.status_bar {
+    display: grid;
+    grid-auto-flow: column;
+    height: 24px;
+    grid-template-columns: 1fr auto auto auto;
+}
+.show_console {
+    background-color: #ccc;
+    width: 24px;
+}
+.status_dashd, .status_neutralino {
+    width: 16px;
+    border-radius: 50%;
+    margin: 5px;
+    height: 16px;
+    align-self: center;
+    display: grid;
+}
+.status_bar .not_started {
+    background-color: red;
+}
+.status_bar .start {
+    background-color: yellow;
+}
+.status_bar .starting {
+    background-color: yellow;
+}
+.status_bar .started {
+    background-color: green;
+}

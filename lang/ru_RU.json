@@ -1,0 +1,20 @@
+{
+    "ru_RU": {
+        "UI": {
+            "console_placeholder": "Введите команду",
+            "status_dashd": "Статус кошелька. Нажмите для запуска/остановки.",
+            "status_neutralino": "Статус Neutralino. Перезапустите приложение если красный.",
+            "show_console": "Открыть консоль."
+        },
+        "tray": {
+            "Quit": "Quit"
+        },
+        "log": {
+            "not_set_user_and_password": "Не установлены переменные rpcuser и rpcpassword",
+            "dashd_stopped": "Dashd не отвечает. Уже остановлени или ошибка конфигурации.",
+            "dashd_start_error": "Ошибка запуска dashd. Возможно неправильно указан путь в файле neutralino.config.json. Или не работает Neutralino.",
+            "dashd_started": "Dashd запущен.",
+            "dashd_path_error": "Неверно задан путь dashd.exe. Проверьте файл neutralino.config.json"
+        }
+    }
+}

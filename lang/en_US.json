@@ -1,0 +1,20 @@
+{
+    "en_US": {
+        "UI": {
+            "console_placeholder": "Enter command",
+            "status_dashd": "Wallet status. Click to start/stop.",
+            "status_neutralino": "Neutralino status. Restart app if red.",
+            "show_console": "Open console."
+        },
+        "tray": {
+            "Quit": "Quit"
+        },
+        "log": {
+            "not_set_user_and_password": "Not set rpcuser and rpcpassword",
+            "dashd_stopped": "Dashd didn't answer. Already stopped or configuration error.",
+            "dashd_start_error": "Error starting dashd. Perhaps the path in the neutralino.config.json file is incorrect. Or Neutralino doesn't work.",
+            "dashd_started": "Dashd started.",
+            "dashd_path_error": "Invalid dashd.exe path. Check neutralino.config.json file"
+        }
+    }
+}
