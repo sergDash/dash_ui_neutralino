@@ -35,8 +35,8 @@ Neutralino.events.on( "ready", async function() {
         app.rpcpassword = NL_RPCPASSWORD;
     } else {
         // Read rpcuser & rpcpassword from dash.conf
-        let user_dir = await Neutralino.os.getEnv( "USERPROFILE" );
-        let content = await await_read_file( `${user_dir}/AppData/Roaming/DashCore/dash.conf` );
+        app.user_dir = await Neutralino.os.getEnv( "USERPROFILE" );
+        let content = await await_read_file( `${app.user_dir}/AppData/Roaming/DashCore/dash.conf` );
         let lines = content.split( "\n" );
         
         for ( line of lines ) {
@@ -129,14 +129,8 @@ Neutralino.events.on( "ready", async function() {
                 }
             } else if ( typeof r == "undefined" ) {
                 set_dashd_status( "not_started" );
-                // check result of start dashd
-                if ( app.dashd_start_time ) {
-                    let timeout = new Date().getTime() - app.dashd_start_time;
-                    if ( timeout > 1000 ) {
-                        console_log( __( "dashd_start_error", "log" ) );
-                        delete app.dashd_start_time;
-                    }
-                }
+
+                
             }
         } );
     
@@ -294,12 +288,46 @@ function set_dashd_status( status ) {
     // add status class
     el.classList.add( status );
 
-    if ( status == "started" ) {
-        delete app.dashd_start_time;
+    switch( status ) {
+        case "started":
+            if ( app.dashd_start_time ) {
+                delete app.dashd_start_time;
+                document.querySelector( ".status_bar .msg" ).innerHTML = __( "dashd_started", "msg" );
+            }
+            // dumphdinfo
+            if ( app.usehd ) {
+                api( { "method": "dumphdinfo", "params": [] }, function( r ) {
+                    document.querySelector( ".status_bar .msg" ).innerHTML = __( "important_info", "msg" );
+                    // open console
+                    document.querySelector( ".console" ).classList.remove( "hidden" );
+                    console_log( __( "important_info", "log" ) );
+                    console_log( `hdseed: "${r.result.hdseed}"` );
+                    console_log( `mnemonic: "${r.result.mnemonic}"` );
+                    console_log( `mnemonicpassphrase: "${r.result.mnemonicpassphrase}"` );
+                } );
+                app.usehd = "";
+            }
+        break;
+
+        case "not_started":
+            document.querySelector( ".status_bar .msg" ).innerHTML = __( "click_to_start", "msg" );
+            // check result of start dashd
+            if ( app.dashd_start_time ) {
+                let timeout = new Date().getTime() - app.dashd_start_time;
+                if ( timeout > 1000 ) {
+                    // open console
+                    document.querySelector( ".console" ).classList.remove( "hidden" );
+                    console_log( __( "dashd_start_error", "log" ) );
+                    delete app.dashd_start_time;
+                }
+            }
+        break;
     }
+
     // if starting
     if ( app.dashd_start_time ) {
         el.classList.add( "start" );
+        document.querySelector( ".status_bar .msg" ).innerHTML = __( "dashd_starting", "msg" );
     }
 }
 
@@ -315,9 +343,15 @@ function stop_dashd() {
 }
 
 
-function start_dashd() {
+async function start_dashd() {
+    // Test wallet.dat
+    app.usehd = "";
+    let wallet_dat = `${app.user_dir}/AppData/Roaming/DashCore/wallets/wallet.dat`;
+    if ( ! await await_file_exists( wallet_dat ) ) {
+        app.usehd = "--usehd";
+    }
     app.dashd_start_time = new Date().getTime();
-    Neutralino.os.execCommand( `${NL_DASHD_EXE} ${NL_DASHD_PARAMS}`, { background: true } );
+    Neutralino.os.execCommand( `${NL_DASHD_EXE} ${app.usehd} ${NL_DASHD_PARAMS}`, { background: true } );
 }
 
 

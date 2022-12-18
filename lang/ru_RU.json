@@ -9,12 +9,18 @@
         "tray": {
             "Quit": "Quit"
         },
+        "msg": {
+            "click_to_start": "Нажмите красный кружок чтобы запустить кошелек.",
+            "dashd_starting": "Кошелек запускается...",
+            "dashd_started": "Кошелек запущен.",
+            "important_info": "Запишите важную информацию:"
+        },
         "log": {
             "not_set_user_and_password": "Не установлены переменные rpcuser и rpcpassword",
             "dashd_stopped": "Dashd не отвечает. Уже остановлени или ошибка конфигурации.",
             "dashd_start_error": "Ошибка запуска dashd. Возможно неправильно указан путь в файле neutralino.config.json. Или не работает Neutralino.",
-            "dashd_started": "Dashd запущен.",
-            "dashd_path_error": "Неверно задан путь dashd.exe. Проверьте файл neutralino.config.json"
+            "dashd_path_error": "Неверно задан путь dashd.exe. Проверьте файл neutralino.config.json",
+            "important_info": "Создан новый кошелек. Запишите эту важную информацию, чтобы иметь возможность в будущем восстановить кошелек."
         }
     }
 }

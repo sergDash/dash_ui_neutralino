@@ -9,12 +9,18 @@
         "tray": {
             "Quit": "Quit"
         },
+        "msg": {
+            "click_to_start": "Click the red circle to start the wallet.",
+            "dashd_starting": "Wallet is starting...",
+            "dashd_started": "Wallet started.",
+            "important_info": "Write down important information:"
+        },
         "log": {
             "not_set_user_and_password": "Not set rpcuser and rpcpassword",
             "dashd_stopped": "Dashd didn't answer. Already stopped or configuration error.",
             "dashd_start_error": "Error starting dashd. Perhaps the path in the neutralino.config.json file is incorrect. Or Neutralino doesn't work.",
-            "dashd_started": "Dashd started.",
-            "dashd_path_error": "Invalid dashd.exe path. Check neutralino.config.json file"
+            "dashd_path_error": "Invalid dashd.exe path. Check neutralino.config.json file",
+            "important_info": "A new wallet has been created. Make a note of this important information so you can restore the wallet in the future."
         }
     }
 }
