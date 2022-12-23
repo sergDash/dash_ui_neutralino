@@ -35,8 +35,18 @@ Neutralino.events.on( "ready", async function() {
         app.rpcpassword = NL_RPCPASSWORD;
     } else {
         // Read rpcuser & rpcpassword from dash.conf
-        app.user_dir = await Neutralino.os.getEnv( "USERPROFILE" );
-        let content = await await_read_file( `${app.user_dir}/AppData/Roaming/DashCore/dash.conf` );
+        let dash_conf = "";
+        if ( NL_OS == "Windows" ) {
+            app.user_dir = await Neutralino.os.getEnv( "USERPROFILE" );
+            dash_conf = `${app.user_dir}/AppData/Roaming/DashCore/dash.conf`;
+        } else if ( NL_OS == "Linux" ) {
+            app.user_dir = await Neutralino.os.getEnv( "HOME" );
+            dash_conf = `${app.user_dir}/.dashcore/dash.conf`;
+        } else if ( NL_OS == "Darwin" ) {
+            app.user_dir = await Neutralino.os.getEnv( "HOME" );
+            dash_conf = `${app.user_dir}/.dashcore/dash.conf`;
+        }
+        let content = await await_read_file( dash_conf );
         let lines = content.split( "\n" );
         
         for ( line of lines ) {
@@ -64,7 +74,17 @@ Neutralino.events.on( "ready", async function() {
 
 
     // Test dashd path
-    if ( ! await await_file_exists( NL_DASHD_EXE ) ) {
+    if ( NL_OS == "Windows" ) {
+        app.dashd_path = NL_WIN_DASHD;
+        app.dashd_params = NL_WIN_DASHD_PARAMS;
+    } else if ( NL_OS == "Linux" ) {
+        app.dashd_path = NL_LIN_DASHD;
+        app.dashd_params = NL_LIN_DASHD_PARAMS;
+    } else if ( NL_OS == "Darwin" ) {
+        app.dashd_path = NL_MAC_DASHD;
+        app.dashd_params = NL_MAC_DASHD_PARAMS;
+    }
+    if ( ! await await_file_exists( app.dashd_path ) ) {
         console.error( __( "dashd_path_error", "log" ) );
     }
 
@@ -95,6 +115,14 @@ Neutralino.events.on( "ready", async function() {
                     start_dashd();
                 break;
 
+                case "dumphdinfo":
+                    rpc( { "method": "dumphdinfo", "params": [] }, function( r ) {
+                        console_log( `hdseed: "${r.result.hdseed}"` );
+                        console_log( `mnemonic: "${r.result.mnemonic}"` );
+                        console_log( `mnemonicpassphrase: "${r.result.mnemonicpassphrase}"` );
+                    } );
+                break;
+
             }
         }
     } );
@@ -120,7 +148,7 @@ Neutralino.events.on( "ready", async function() {
     setInterval( async function() {
     
         // Check Dashd status
-        api( { "method": "uptime", "params": [] }, function( r ) {
+        rpc( { "method": "uptime", "params": [] }, function( r ) {
             if ( typeof r == "object" ) {
                 if ( r.error == null ) {
                     set_dashd_status( "started" );
@@ -129,8 +157,6 @@ Neutralino.events.on( "ready", async function() {
                 }
             } else if ( typeof r == "undefined" ) {
                 set_dashd_status( "not_started" );
-
-                
             }
         } );
     
@@ -233,9 +259,9 @@ function console_log( line, classes = "" ) {
 
 
 // Example:
-// api( { method: "uptime", params: [] }, function( r ) { alert( r ); } );
+// rpc( { method: "uptime", params: [] }, function( r ) { alert( r ); } );
 // More functions https://dashcore.readme.io/docs/core-api-ref-remote-procedure-calls-control
-async function api( data, callback ) {
+async function rpc( data, callback ) {
     if ( app.rpcuser == "" || app.rpcpassword == "" ) {
         console.error( __( "not_set_user_and_password", "error" ) );
         return;
@@ -296,7 +322,7 @@ function set_dashd_status( status ) {
             }
             // dumphdinfo
             if ( app.usehd ) {
-                api( { "method": "dumphdinfo", "params": [] }, function( r ) {
+                rpc( { "method": "dumphdinfo", "params": [] }, function( r ) {
                     document.querySelector( ".status_bar .msg" ).innerHTML = __( "important_info", "msg" );
                     // open console
                     document.querySelector( ".console" ).classList.remove( "hidden" );
@@ -333,7 +359,7 @@ function set_dashd_status( status ) {
 
 
 function stop_dashd() {
-    api( { method: "stop", params: [] }, function( r ) {
+    rpc( { method: "stop", params: [] }, function( r ) {
         if ( r ) {
             console.log( r );
         } else {
@@ -346,12 +372,19 @@ function stop_dashd() {
 async function start_dashd() {
     // Test wallet.dat
     app.usehd = "";
-    let wallet_dat = `${app.user_dir}/AppData/Roaming/DashCore/wallets/wallet.dat`;
+    let wallet_dat = "";
+    if ( NL_OS == "Windows" ) {
+        wallet_dat = `${app.user_dir}/AppData/Roaming/DashCore/wallets/wallet.dat`;
+    } else if ( NL_OS == "Linux" ) {
+        wallet_dat = `${app.user_dir}/.dashcore/wallets/wallet.dat`;
+    } else if ( NL_OS == "Darwin" ) {
+        wallet_dat = `${app.user_dir}/.dashcore/wallets/wallet.dat`;
+    }
     if ( ! await await_file_exists( wallet_dat ) ) {
         app.usehd = "--usehd";
     }
     app.dashd_start_time = new Date().getTime();
-    Neutralino.os.execCommand( `${NL_DASHD_EXE} ${app.usehd} ${NL_DASHD_PARAMS}`, { background: true } );
+    Neutralino.os.execCommand( `"${app.dashd_path}" ${app.usehd} ${app.dashd_params}`, { background: true } );
 }
 
 

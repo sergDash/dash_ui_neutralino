@@ -42,7 +42,11 @@
         "DASHD_URL": "http://127.0.0.1:9998/",
         "RPCUSER": "",
         "RPCPASSWORD": "",
-        "DASHD_EXE": "C:/Users/serg/Desktop/bin/dashcore-18.1.0/bin/dashd.exe",
-        "DASHD_PARAMS": "-blocksdir=d:\\\\"
+        "WIN_DASHD": "C:/Users/serg/Desktop/bin/dashcore-18.1.0/bin/dashd.exe",
+        "WIN_DASHD_PARAMS": "-blocksdir=d:\\\\",
+        "LIN_DASHD": "/home/serg/Рабочий стол/dashcore-18.1.0/bin/dashd",
+        "LIN_DASHD_PARAMS": "",
+        "MAC_DASHD": "/Users/serg/Desktop/dashcore-18.1.0/bin/dashd",
+        "MAC_DASHD_PARAMS": ""
     }
 }
