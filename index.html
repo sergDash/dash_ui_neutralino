@@ -8,7 +8,14 @@
     </head>
     <body>
         <div class="main">
-            main
+            <div class="wallet-summary">
+
+            </div>
+            <div class="transactions-scroll">
+                <div class="transactions">
+
+                </div>
+            </div>
         </div>
 
         <div class="status_bar">
@@ -21,6 +28,22 @@
         <div class="console hidden">
             <div class="log"></div>
             <textarea name="command"></textarea>
+        </div>
+
+        <!-- Просмотр информации о транзакции -->
+        <div class="tx-info">
+
+        </div>
+
+        <!-- Шаблон блочка транзакции -->
+        <div class="tx-tpl hidden">
+            <div class="tx" data-tx="">
+                <div class="icon"><img src=""></div>
+                <div class="direction"></div>
+                <div class="date"></div>
+                <div class="sum-dash"></div>
+                <div class="sum-currency"></div>
+            </div>
         </div>
 
         <script src="neutralino.js"></script>

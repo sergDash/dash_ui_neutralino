@@ -10,6 +10,10 @@
     padding: 0;
 }
 
+img {
+    max-width: 100%;
+}
+
 html {
     height: 100vh;
     padding: 0;
@@ -25,6 +29,60 @@ body {
     overflow: hidden;
 }
 
+.main {
+    display: grid;
+    grid-template-rows: 10rem 1fr;
+    min-height: 0;
+}
+
+.transactions-scroll {
+    overflow-y: auto;
+}
+
+.transactions {
+    display: grid;
+    row-gap: 1rem;
+    padding: 1rem;
+}
+
+.transactions .tx {
+    display: grid;
+    grid-template-areas:
+        "icon direction sum_dash"
+        "icon date      sum_curr";
+    background-color: #ccc;
+}
+
+.tx .icon {
+    grid-area: icon;
+    max-width: 64px;
+}
+.tx .icon img {
+    justify-self: center;
+    display: block;
+}
+.tx .direction {
+    grid-area: direction;
+    align-content: center;
+    display: grid;
+}
+.tx .date {
+    grid-area: date;
+    align-content: center;
+    display: grid;
+}
+.tx .sum-dash {
+    grid-area: sum_dash;
+    align-content: center;
+    display: grid;
+}
+.tx .sum-currency {
+    grid-area: sum_curr;
+    align-content: center;
+    display: grid;
+}
+
+/*
 body .h0 {
     height: 0;
 }
@@ -35,6 +93,7 @@ body .h0 {
     background: aliceblue;
     overflow: hidden;
 }
+*/
 
 .console {
     display: grid;

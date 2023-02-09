@@ -5,12 +5,17 @@ Neutralino.init();
 
 // Init Global variables
 let l10n = {}
-let app = { rpcuser: "", rpcpassword: "" };
+let app = {
+    rpcuser: "",
+    rpcpassword: "",
+    lastblock: "",    // for get transactions list
+    txs: [],
+};
 
 
 Neutralino.events.on( "ready", async function() {
 
-    Neutralino.window.move( 10, 10 );
+    //Neutralino.window.move( 10, 10 );
 
     
     // Load file for detect user language
@@ -181,8 +186,11 @@ Neutralino.events.on( "ready", async function() {
                 status_el.classList.add( "started" );
             }
         }
+
+        // debug
+        update_transactions_list();
     
-    }, 1000 );
+    }, 2000 );
 
 
     // Run Tray Icon
@@ -307,20 +315,22 @@ async function rpc( data, callback ) {
 
 
 function set_dashd_status( status ) {
-    app.dashd_status = status;
-    let el = document.querySelector( ".status_dashd" );
-    // reset previous classes
-    el.setAttribute( "class", "status_dashd" );
-    // add status class
-    el.classList.add( status );
-
+    
     switch( status ) {
         case "started":
-            if ( app.dashd_start_time ) {
+
+            // Переход из состояния не запущено -> запущено
+            if ( app.dashd_start_time || app.dashd_status !== "started" ) {
+
+                // Меняем статус в статусной строке
+                //todo: после F5 тоже выставлять
                 delete app.dashd_start_time;
                 document.querySelector( ".status_bar .msg" ).innerHTML = __( "dashd_started", "msg" );
+                
             }
-            // dumphdinfo
+
+            // Показать сид-фразу кошелька после его создания
+            // Создание нового кошелька определяем по установленной app.usehd
             if ( app.usehd ) {
                 rpc( { "method": "dumphdinfo", "params": [] }, function( r ) {
                     document.querySelector( ".status_bar .msg" ).innerHTML = __( "important_info", "msg" );
@@ -350,7 +360,14 @@ function set_dashd_status( status ) {
         break;
     }
 
-    // if starting
+    app.dashd_status = status;
+    let el = document.querySelector( ".status_dashd" );
+    // reset previous classes
+    el.setAttribute( "class", "status_dashd" );
+    // add status class
+    el.classList.add( status );
+
+    // Идет запуск - желтый значок
     if ( app.dashd_start_time ) {
         el.classList.add( "start" );
         document.querySelector( ".status_bar .msg" ).innerHTML = __( "dashd_starting", "msg" );
@@ -385,6 +402,7 @@ async function start_dashd() {
     }
     app.dashd_start_time = new Date().getTime();
     Neutralino.os.execCommand( `"${app.dashd_path}" ${app.usehd} ${app.dashd_params}`, { background: true } );
+    // После запуска ждите событие wallet_started чтобы обновить список транзакций
 }
 
 
@@ -434,3 +452,44 @@ async function await_file_exists( path ) {
     );
     return x;
 }
+
+
+// Обновляем список транзакций
+function update_transactions_list() {
+    // Получам список транзакций
+    //https://dashcore.readme.io/docs/core-api-ref-remote-procedure-calls-wallet#listsinceblock
+    //https://dashcore.readme.io/docs/core-api-ref-remote-procedure-calls-wallet#listtransactions
+    //todo: в чем отличия, что лучше?
+    rpc( { "method": "listsinceblock", "params": [ app.lastblock ] }, function( r ) {
+        if ( r.result && r.result.transactions ) {
+            let tx_tpl = document.querySelector( ".tx-tpl" ).innerHTML;
+            let transactions = document.querySelector( ".transactions" );
+            r.result.transactions.sort( tx_sort );
+            r.result.transactions.forEach( function( tx ) {
+                if ( ! app.txs.includes( tx.txid ) ) {
+                    transactions.insertAdjacentHTML( "afterbegin", tx_tpl );
+                    let tx_el = transactions.firstElementChild;
+                    tx_el.setAttribute( "data-tx", tx.txid );
+                    tx_el.querySelector( ".icon img" ).setAttribute( "src", tx.category + ".png" );
+                    tx_el.querySelector( ".direction" ).innerHTML = __( tx.category, "UI" );
+                    tx_el.querySelector( ".sum-dash" ).innerHTML = tx.amount;
+                    let time = new Date( tx.time * 1000 ).toLocaleString();
+                    tx_el.querySelector( ".date" ).innerHTML = time;
+                    app.txs.push( tx.txid );
+                }
+            } );
+            app.lastblock = r.result.lastblock;
+        }
+    } );
+}
+
+function tx_sort( a, b ) {
+    if ( a.time < b.time ) {
+        return -1;
+    }
+    if ( a.time > b.time ) {
+        return 1;
+    }
+    return 0;
+}
+  

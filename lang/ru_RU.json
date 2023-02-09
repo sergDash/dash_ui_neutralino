@@ -4,7 +4,9 @@
             "console_placeholder": "Введите команду",
             "status_dashd": "Статус кошелька. Нажмите для запуска/остановки.",
             "status_neutralino": "Статус Neutralino. Перезапустите приложение если красный.",
-            "show_console": "Открыть консоль."
+            "show_console": "Открыть консоль.",
+            "receive": "Получено",
+            "send": "Отправлено"
         },
         "tray": {
             "Quit": "Quit"
